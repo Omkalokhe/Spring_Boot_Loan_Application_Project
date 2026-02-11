@@ -11,9 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.dao.CustomerRepository;
-import com.entity.EmailDto;
+import com.dto.EmailDto;
+import com.dto.UserDto;
+import com.entity.Login;
 import com.entity.User;
-import com.entity.UserResponse;
 import com.enumValue.EnumData;
 import com.service.CustomerService;
 
@@ -30,11 +31,12 @@ public class CustomerServiceImpl implements CustomerService {
 	private RestTemplate restTemplate;
 
 	@Override
-	public UserResponse registerUserInfo(User user) {
+	public UserDto registerUserInfo(User user) {
 		log.info("In Customer Service Register User Info Method");
 		boolean isUserExist = getuserIsExistByEmail(user.getEmail());
-		UserResponse userResponse = new UserResponse();
+		UserDto userResponse = new UserDto();
 		EmailDto emaildto = new EmailDto();
+		Login login = new Login();
 		if (isUserExist) {
 			userResponse.setUsername(user.getEmail());
 			userResponse.setMessage("User Email Already Exist.");
@@ -51,6 +53,11 @@ public class CustomerServiceImpl implements CustomerService {
 		}
 		user.setStatus(flag);
 		user.setCreatedby(user.getUsername());
+		login.setUsername(user.getUsername());
+		login.setEmail(user.getEmail());
+		login.setPassword(user.getPassword());
+		login.setUser(user);
+		user.setLogin(login);
 		User user1 = customerRepository.save(user);
 		if (user1 != null) {
 			emaildto.setTo(user1.getEmail());
@@ -83,10 +90,10 @@ public class CustomerServiceImpl implements CustomerService {
 		if (user != null) {
 			return new ResponseEntity<User>(user, HttpStatus.OK);
 		}
-		UserResponse response = new UserResponse();
+		UserDto response = new UserDto();
 		response.setUsername(null);
 		response.setMessage("User not found with id : " + id);
-		return new ResponseEntity<UserResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<UserDto>(response, HttpStatus.OK);
 
 	}
 
@@ -97,10 +104,10 @@ public class CustomerServiceImpl implements CustomerService {
 		if (user != null) {
 			return new ResponseEntity<User>(user, HttpStatus.OK);
 		}
-		UserResponse response = new UserResponse();
+		UserDto response = new UserDto();
 		response.setUsername(email);
 		response.setMessage("User not found with this email");
-		return new ResponseEntity<UserResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<UserDto>(response, HttpStatus.OK);
 	}
 
 	@Override
@@ -110,10 +117,10 @@ public class CustomerServiceImpl implements CustomerService {
 		if (user != null) {
 			return new ResponseEntity<User>(user, HttpStatus.OK);
 		}
-		UserResponse response = new UserResponse();
+		UserDto response = new UserDto();
 		response.setUsername(username);
 		response.setMessage("User not found with this username");
-		return new ResponseEntity<UserResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<UserDto>(response, HttpStatus.OK);
 	}
 
 	@Override
@@ -136,10 +143,10 @@ public class CustomerServiceImpl implements CustomerService {
 			customerRepository.save(user1);
 			return new ResponseEntity<User>(user1, HttpStatus.OK);
 		}
-		UserResponse response = new UserResponse();
+		UserDto response = new UserDto();
 		response.setUsername(email);
 		response.setMessage("User not found with this email");
-		return new ResponseEntity<UserResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<UserDto>(response, HttpStatus.OK);
 	}
 
 	@Override
@@ -157,16 +164,16 @@ public class CustomerServiceImpl implements CustomerService {
 				customerRepository.save(user);
 				return new ResponseEntity<User>(user, HttpStatus.OK);
 			} else {
-				UserResponse response = new UserResponse();
+				UserDto response = new UserDto();
 				response.setUsername(email);
 				response.setMessage("User Status is Already NonActive That Why We Can't Proceed this Operation");
-				return new ResponseEntity<UserResponse>(response, HttpStatus.OK);
+				return new ResponseEntity<UserDto>(response, HttpStatus.OK);
 			}
 		}
-		UserResponse response = new UserResponse();
+		UserDto response = new UserDto();
 		response.setUsername(email);
 		response.setMessage("User not found with this email That Why We Can't Proceed Delete Operation");
-		return new ResponseEntity<UserResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<UserDto>(response, HttpStatus.OK);
 	}
 
 }

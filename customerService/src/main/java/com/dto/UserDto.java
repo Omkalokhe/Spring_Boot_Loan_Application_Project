@@ -1,11 +1,11 @@
-package com.entity;
+package com.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class UserResponse {
+public class UserDto {
 		
 	private String username;
 	

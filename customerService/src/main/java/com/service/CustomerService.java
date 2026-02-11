@@ -2,12 +2,12 @@ package com.service;
 
 import org.springframework.http.ResponseEntity;
 
+import com.dto.UserDto;
 import com.entity.User;
-import com.entity.UserResponse;
 
 public interface CustomerService {
 
-	public UserResponse registerUserInfo(User user);
+	public UserDto registerUserInfo(User user);
 	
 	public ResponseEntity<?> getUserById(int id);
 	

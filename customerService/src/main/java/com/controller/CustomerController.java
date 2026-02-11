@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dto.UserDto;
 import com.entity.User;
-import com.entity.UserResponse;
 import com.service.CustomerService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +26,10 @@ public class CustomerController {
 	private CustomerService customerService;
 
 	@PostMapping(value = "/api/cust/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserResponse> registerUserInfo(@RequestBody User user) {
+	public ResponseEntity<UserDto> registerUserInfo(@RequestBody User user) {
 		log.info("In Customer Controller");
-		UserResponse userResponse = customerService.registerUserInfo(user);
-		return new ResponseEntity<UserResponse>(userResponse, HttpStatus.CREATED);
+		UserDto userResponse = customerService.registerUserInfo(user);
+		return new ResponseEntity<UserDto>(userResponse, HttpStatus.CREATED);
 	}
 
 	@GetMapping(value = "/api/cust/{id}")
@@ -64,5 +64,7 @@ public class CustomerController {
 		ResponseEntity<?> response = customerService.deleteUserByEmail(email);
 		return response;
 	}
+	
+	
 	
 }
