@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dto.UserDto;
+import com.dto.UserResopnse;
 import com.entity.User;
 import com.service.CustomerService;
 
@@ -26,10 +26,10 @@ public class CustomerController {
 	private CustomerService customerService;
 
 	@PostMapping(value = "/api/cust/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserDto> registerUserInfo(@RequestBody User user) {
+	public ResponseEntity<UserResopnse> registerUserInfo(@RequestBody User user) {
 		log.info("In Customer Controller");
-		UserDto userResponse = customerService.registerUserInfo(user);
-		return new ResponseEntity<UserDto>(userResponse, HttpStatus.CREATED);
+		UserResopnse userResponse = customerService.registerUserInfo(user);
+		return new ResponseEntity<UserResopnse>(userResponse, HttpStatus.CREATED);
 	}
 
 	@GetMapping(value = "/api/cust/{id}")

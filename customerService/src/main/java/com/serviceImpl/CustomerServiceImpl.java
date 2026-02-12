@@ -12,7 +12,9 @@ import org.springframework.web.client.RestTemplate;
 
 import com.dao.CustomerRepository;
 import com.dto.EmailDto;
+import com.dto.LoginDto;
 import com.dto.UserDto;
+import com.dto.UserResopnse;
 import com.entity.Login;
 import com.entity.User;
 import com.enumValue.EnumData;
@@ -31,10 +33,10 @@ public class CustomerServiceImpl implements CustomerService {
 	private RestTemplate restTemplate;
 
 	@Override
-	public UserDto registerUserInfo(User user) {
+	public UserResopnse registerUserInfo(User user) {
 		log.info("In Customer Service Register User Info Method");
 		boolean isUserExist = getuserIsExistByEmail(user.getEmail());
-		UserDto userResponse = new UserDto();
+		UserResopnse userResponse = new UserResopnse();
 		EmailDto emaildto = new EmailDto();
 		Login login = new Login();
 		if (isUserExist) {
@@ -90,10 +92,10 @@ public class CustomerServiceImpl implements CustomerService {
 		if (user != null) {
 			return new ResponseEntity<User>(user, HttpStatus.OK);
 		}
-		UserDto response = new UserDto();
+		UserResopnse response = new UserResopnse();
 		response.setUsername(null);
 		response.setMessage("User not found with id : " + id);
-		return new ResponseEntity<UserDto>(response, HttpStatus.OK);
+		return new ResponseEntity<UserResopnse>(response, HttpStatus.OK);
 
 	}
 
@@ -102,12 +104,20 @@ public class CustomerServiceImpl implements CustomerService {
 		log.info("In Customer Service Get User Info By Email Method");
 		User user = customerRepository.findByEmail(email);
 		if (user != null) {
-			return new ResponseEntity<User>(user, HttpStatus.OK);
+			LoginDto login = LoginDto.builder().id(user.getLogin().getId()).username(user.getLogin().getUsername())
+					.email(user.getLogin().getEmail()).build();
+
+			UserDto userDto = UserDto.builder().id(user.getId()).fname(user.getFname()).lname(user.getLname())
+					.address(user.getAddress()).username(user.getUsername()).email(user.getEmail()).dob(user.getDob())
+					.mobileno(user.getMobileno()).country(user.getCountry()).state(user.getState()).city(user.getCity())
+					.zipcode(user.getZipcode()).loginDto(login).build();
+
+			return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
 		}
-		UserDto response = new UserDto();
+		UserResopnse response = new UserResopnse();
 		response.setUsername(email);
 		response.setMessage("User not found with this email");
-		return new ResponseEntity<UserDto>(response, HttpStatus.OK);
+		return new ResponseEntity<UserResopnse>(response, HttpStatus.OK);
 	}
 
 	@Override
@@ -117,10 +127,10 @@ public class CustomerServiceImpl implements CustomerService {
 		if (user != null) {
 			return new ResponseEntity<User>(user, HttpStatus.OK);
 		}
-		UserDto response = new UserDto();
+		UserResopnse response = new UserResopnse();
 		response.setUsername(username);
 		response.setMessage("User not found with this username");
-		return new ResponseEntity<UserDto>(response, HttpStatus.OK);
+		return new ResponseEntity<UserResopnse>(response, HttpStatus.OK);
 	}
 
 	@Override
@@ -143,10 +153,10 @@ public class CustomerServiceImpl implements CustomerService {
 			customerRepository.save(user1);
 			return new ResponseEntity<User>(user1, HttpStatus.OK);
 		}
-		UserDto response = new UserDto();
+		UserResopnse response = new UserResopnse();
 		response.setUsername(email);
 		response.setMessage("User not found with this email");
-		return new ResponseEntity<UserDto>(response, HttpStatus.OK);
+		return new ResponseEntity<UserResopnse>(response, HttpStatus.OK);
 	}
 
 	@Override
@@ -164,16 +174,16 @@ public class CustomerServiceImpl implements CustomerService {
 				customerRepository.save(user);
 				return new ResponseEntity<User>(user, HttpStatus.OK);
 			} else {
-				UserDto response = new UserDto();
+				UserResopnse response = new UserResopnse();
 				response.setUsername(email);
 				response.setMessage("User Status is Already NonActive That Why We Can't Proceed this Operation");
-				return new ResponseEntity<UserDto>(response, HttpStatus.OK);
+				return new ResponseEntity<UserResopnse>(response, HttpStatus.OK);
 			}
 		}
-		UserDto response = new UserDto();
+		UserResopnse response = new UserResopnse();
 		response.setUsername(email);
 		response.setMessage("User not found with this email That Why We Can't Proceed Delete Operation");
-		return new ResponseEntity<UserDto>(response, HttpStatus.OK);
+		return new ResponseEntity<UserResopnse>(response, HttpStatus.OK);
 	}
 
 }
