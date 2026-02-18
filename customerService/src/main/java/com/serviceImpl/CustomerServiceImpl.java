@@ -186,4 +186,15 @@ public class CustomerServiceImpl implements CustomerService {
 		return new ResponseEntity<UserResopnse>(response, HttpStatus.OK);
 	}
 
+	@Override
+	public ResponseEntity<?> assignRoleByName(int id, String role) {
+		User user = customerRepository.getById(id);
+		if (user != null) {
+			user.setRoleName(role);
+			customerRepository.save(user);
+			return new ResponseEntity<String>("Role Assign Successfully", HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("Role is Assign Successfully Because User Is not Present", HttpStatus.OK);
+	}
+
 }

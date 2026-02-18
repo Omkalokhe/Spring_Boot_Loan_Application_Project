@@ -65,4 +65,6 @@ public class User {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private Login login;
+
+	private String roleName;
 }

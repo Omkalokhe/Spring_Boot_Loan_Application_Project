@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
+import com.dto.RoleDto;
 import com.dto.UserResopnse;
 import com.entity.User;
 import com.service.CustomerService;
@@ -24,6 +26,9 @@ public class CustomerController {
 
 	@Autowired
 	private CustomerService customerService;
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
 	@PostMapping(value = "/api/cust/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserResopnse> registerUserInfo(@RequestBody User user) {
@@ -63,6 +68,30 @@ public class CustomerController {
 	public ResponseEntity<?> deleteUserDetailsByEmail(@PathVariable("email") String email){
 		ResponseEntity<?> response = customerService.deleteUserByEmail(email);
 		return response;
+	}
+	
+	@PutMapping(value = "/api/cust/assignRole/{id}/{role}")
+	public ResponseEntity<?> assignRole(@PathVariable("id")int id,@PathVariable("role")String role){
+		 
+		  String url = "http://localhost:8002/api/admin/getRoleByName/" + role;
+
+		    try {
+
+		        ResponseEntity<RoleDto> response =
+		                restTemplate.getForEntity(url, RoleDto.class);
+
+		        RoleDto roleData = response.getBody();
+
+		        if (roleData == null) {
+		            return ResponseEntity.badRequest().body("Role not found");
+		        }
+
+		        return customerService.assignRoleByName(id, roleData.getRolename());
+
+		    } catch (Exception e) {
+		        return ResponseEntity.internalServerError()
+		                .body("Admin service error: " + e.getMessage());
+		    }
 	}
 	
 	
